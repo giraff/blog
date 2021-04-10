@@ -1,0 +1,70 @@
+// script 파일
+// 일반적인 css는 변수 사용 불가
+// scss는 변수 사용 가능. 능동적으로 css 파일 만들기 가능
+
+// 화면 포스트 작성 중 흔들림 잡기
+html {
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+#main-footer {
+  background: #343a40;
+  color: #fff;
+}
+
+#page-header {
+  height: 200px;
+  background: url("./img/image.jpg");
+  background-position: 50% 40%;
+  color: #fff;
+  border-bottom: 1px #eee solid;
+  padding-top: 60px;
+}
+
+// 바디에 내용이 없을 때 푸터가 올라오는 걸 방지 (공간을 만들어줌)
+#main-body {
+  min-height: 90vh;
+}
+
+// PostCardOne의 <CardImg top ../> 을 가리키는 클래스명
+.card-img-top {
+  width: 100%;
+  height: 20rem;
+  object-fit: cover;
+}
+
+// CKEditor Writing
+.ck {
+  .ck-editor {
+    min-width: 100%;
+  }
+}
+
+.ck-editor__editable {
+  max-height: 80rem;
+  min-height: 20rem;
+  min-width: 100%;
+}
+
+// 글을 읽을 때 그냥 HTML 을 읽지 않고
+// ck-editor 나름의 클래스를 사용하여 글을 작성
+// 에디터를 통해 글을 봐야한다.
+// 사용할 에디터는 inline
+.ck-editor__editable__inline {
+  // 글 작성 화면과 동일하게 (사람들이 똑같은 거라고 생각)
+  max-height: 80rem;
+  min-height: 20rem;
+  min-width: 100%;
+}
+
+textarea {
+  // resize (아래 하단에 드래그하여 크기를 조정하는 기능을 제거)
+  resize: none;
+}
+
+.my_category {
+  &:last-child {
+    margin-bottom: 0.25rem;
+  }
+}
