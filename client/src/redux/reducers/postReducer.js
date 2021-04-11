@@ -16,6 +16,9 @@ import {
   CATEGORY_FIND_REQUEST,
   CATEGORY_FIND_SUCCESS,
   CATEGORY_FIND_FAILURE,
+  SEARCH_REQUEST,
+  SEARCH_SUCCESS,
+  SEARCH_FAILURE,
 } from '../types';
 
 //초기상태
@@ -131,6 +134,27 @@ export default function(state = initialState, action) {
       return {
         ...state,
         categoryFindResult: action.payload,
+        loading: false,
+      };
+    case SEARCH_REQUEST:
+      return {
+        ...state,
+        posts:[],  // 홈으로 넘어오는 경우 게시글이 겹쳐질 수 있으므로 비워준다.
+        searchBy: action.payload,
+        loading: true,
+      };
+    case SEARCH_SUCCESS:
+      // edit은 인증된 사람만 가능하다.
+      return {
+        ...state,
+        searchBy: action.payload, // 무엇으로 검색했는지 input 창 입력값
+        searchResult: action.payload, //search 결과를 받는다,.
+        loading: false,
+      };
+    case SEARCH_FAILURE:
+      return {
+        ...state,
+        searchResult: action.payload, 
         loading: false,
       };
     default:

@@ -14,6 +14,7 @@ const {MONGO_URI} = config;
 import postRoutes from './routes/api/post';
 import userRoutes from './routes/api/user';
 import authRoutes from './routes/api/auth';
+import searchRoutes from './routes/api/search';
 
 
 // server의 보안 측면을 보완해주는 라이브러리
@@ -34,10 +35,10 @@ mongoose.connect(MONGO_URI, {
 .catch((e) => console.log(e));
 
 // Use routes
-app.get('/');
 app.use('/api/post', postRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/search', searchRoutes);
 
 
 export default app;

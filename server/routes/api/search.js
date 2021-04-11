@@ -1,19 +1,25 @@
-import express from "express";
+import express from 'express'
+const router = express.Router();
 
+import Post from '../../models/post';
 
-router.get('/category/:categoryName', async(req, res, next) => {
+router.get('/:searchTerm', async(req, res, next) => {
   try {
-    const result = await Category.findOne({
-      categoryName: {
-        $regex: req.params.categoryName,
+    // 포스트 여러개를 찾는 거라 findOne이 아닌 find
+    const result = await Post.find({
+      // title 기준으로 검색
+      title: {
+        $regex: req.params.searchTerm,
         $options: "i" //정규표현식을 덜 민감하게 insensitive
         // 요 조건으로 posts부분에서 category를 찾으라.
       },
-    }, "posts").populate({ path: "posts" });
-    console.log(result, "Category Find result");
+    }, "posts")
+    console.log(result, "Search result");
     res.send(result);
   }catch(e) {
     console.log(e);
     next(e);
   } 
 });
+
+export default router;

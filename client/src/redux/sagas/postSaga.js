@@ -22,6 +22,9 @@ import {
   CATEGORY_FIND_SUCCESS,
   CATEGORY_FIND_FAILURE,
   CATEGORY_FIND_REQUEST,
+  SEARCH_SUCCESS,
+  SEARCH_FAILURE,
+  SEARCH_REQUEST,
 
 } from '../types';
 import { push } from 'connected-react-router';
@@ -291,6 +294,41 @@ function* watchCategoryFind() {
   yield takeEvery(CATEGORY_FIND_REQUEST, CategoryFind);
 }
 
+// SEARCH
+
+const SearchResultAPI = (payload) => {
+  return axios.get(`/api/search/${encodeURIComponent(payload)}`);
+  /** encodeURIComponent() 함수는 URI의 특정 문자를 UTF-8로 인코딩(암호화)하여 
+   * 하나, 둘 , 셋 혹은 네개의 연속된 이스케이프 문자로 나타낸다. 
+   * encodes characters such as ?,=,/,&,: ...
+   *  한글로 사과 라고 하면 이상한 글자가 나옴
+   */
+}
+
+function* SearchResult(action) {
+  try {
+    const result = yield call(SearchResultAPI, action.payload);
+    yield put({
+      type: SEARCH_SUCCESS,
+      payload: result.data,
+    });
+    // 검색 후 엔터를 누르면 해당 화면으로 넘어가는 것을 만들어주어야 한다.
+    // 검색한 '결과 목록을 보여줄 화면'을 넘어갈 경로를 넘겨준다.
+    yield put(push(`/search/${encodeURIComponent(action.payload)}`));
+  } catch (e) {
+    yield put({
+      type: SEARCH_FAILURE,
+      payload: e,
+    });
+    yield put(push("/"));
+  }
+}
+
+function* watchSearchResult() {
+  yield takeEvery(SEARCH_REQUEST, SearchResult);
+
+}
+
 
 export default function* postSaga() {
   yield all([
@@ -301,6 +339,6 @@ export default function* postSaga() {
     fork(watchPostEditLoad),
     fork(watchPostEditUpload),
     fork(watchCategoryFind),
-
+    fork(watchSearchResult),
   ]);
 }
