@@ -41,9 +41,7 @@ router.get('/', async(req, res) => {
 // @desc        Register user
 // @access      public
 
-router.post('/', (req, res) => {
-  console.log(req);
-  
+router.post('/', (req, res) => {  
   // express 서버에선 대부분의 정보가 req.body에 담겨있다.
   const {name, email,password} = req.body;
 
@@ -88,5 +86,53 @@ router.post('/', (req, res) => {
     }); 
   });
 });
+
+// 프로필 페이지 (비밀번호 수정 기능만)
+//@route    POST api/user/:username/profile
+//@desc     POST Edit Password
+//@access   Private
+router.post('/:username/profile', async(req, res) => {
+  try {
+    const {previousPassword, password, rePassword, userId} = req.body;
+    // 구조 분해
+    
+    const result = await User.findById(userId, 'password'); // userId로 찾은 계정의 password를 가져옴
+    
+    bcrypt.compare(previousPassword, result.password) // bcrypt 를 통해 이전 패스워드와 계정에 있던 패스워드 일치 여부 확인
+    .then((isMatch) => {
+      if(!isMatch) { //일치 하지 않음
+        console.log('비밀번호 불일치');
+        return res.status(400).json({
+          match_msg: "기존 비밀 번호와 일치하지 않습니다."
+        })
+      } else {
+        // 새 비밀번호 등록
+        if(password === rePassword) {
+          console.log('비밀번호 확인됨');
+          bcrypt.genSalt(10, (err, salt) => { // salt 생성 (2의 10승번 계산해서 salt 제작)
+            bcrypt.hash(password, salt, (err, hash) => { // hash 값 만들기 (새 비밀번호에 salt를 넣어서 새 비밀번호를 해쉬값(임의의 값)으로 만들어준다)
+              if(err) throw err; // 만약 에러가 나면 에러 던져버림
+              result.password = hash; // result의 password 값을 hash로 교체하고
+              result.save();// result 저장
+            })
+          })
+          
+          res.status(200).json({
+            success_msg: "비밀번호가 업데이트 되었습니다."
+          })
+
+        } else {
+          console.log('비밀번호 비교 확인 틀림');
+
+          res.status(400).json({
+            fail_msg: "입력한 값이 새 비밀번호와 동일하지 않습니다"
+          })
+        }
+      }
+    })
+  } catch (e) {
+    console.log(e);
+  }
+})
 
 export default router;

@@ -6,6 +6,7 @@ import LoginModal from './auth/LoginModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOGOUT_REQUEST } from '../redux/types';
 import RegisterModal from './auth/RegisterModal';
+import SearchInput from './search/searchInput';
 
 const AppNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,7 +57,7 @@ const AppNavbar = () => {
       <NavItem className="d-flex justify-content-center">
         <Form className="col mt-2">
           {user && user.name ? (
-            <Link>
+            <Link to={`/user/${user.name}/profile`}>
             {/* 내용물이 채워지지 않고 테두리에만 색 넣기 */}
               <Button outline color="light" className="px-3">
                 <strong>{user ? `Welcome ${user.name}` : ""}</strong>
@@ -101,6 +102,8 @@ const AppNavbar = () => {
         </Link>
         <NavbarToggler onClick={handleToggle}/>
         <Collapse isOpen={isOpen} navbar>
+          {/* 모바일 화면에서는 접힌채로 나와야한다. */}
+          <SearchInput isOpen={isOpen} />
           <Nav className="ml-auto d-flex justify-content-around" navbar>
             {isAuthenticated ? authLink : guestLink}
           </Nav>
