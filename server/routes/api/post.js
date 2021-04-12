@@ -85,7 +85,6 @@ router.get('/', async(req, res) => {
 // middleware의 auth에 의해 토큰 값을 넘겨준 인증된 사용자만 글을 쓸 수 있게 함
 router.post("/", auth, uploadS3.none(), async (req, res, next) => {
   try {
-    console.log(req, "req");
     const { title, contents, fileUrl, creator, category } = req.body;
     const newPost = await Post.create({
       title,

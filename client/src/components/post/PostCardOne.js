@@ -25,7 +25,7 @@ const PostCardOne = ({posts}) => {
                   </CardTitle>
                   <Row>
                     <Button color="warning" className="p-1 btn-block">
-                      Comments <Badge color="light">{comments.length}</Badge>
+                      Comments <Badge color="light">{comments ? comments.length : 0}</Badge>
                     </Button>
                   </Row>
                 </CardBody>
