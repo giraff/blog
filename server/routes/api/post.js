@@ -28,7 +28,7 @@ const uploadS3 = multer({
   // storage : multer S3 storage를 사용 설정은 액세스 키, 버킷 이름, 지역, 파일 식별자를 설정해준다.
   storage: multerS3({
     s3, // AWS의 accessKey ID와 secretAccessKey
-    bucket: "giraffproject0402", // AWS 버킷 명
+    bucket: "giraffbucket", // AWS 버킷 명
     region: "ap-northeast-2", // AWS 지역 : ap(아시아 태평양)-northeast(북)-Korean(일본이 1, 한국은 2)
     key(req,file,cb) {
       // 파일을 불러와 보낼 때 파일 이름은 우연의 일치로 서로 같을 수 있다. 파일 이름에 업로드한 날짜를 심어주어 파일간의 구별이 가능하도록 설정
@@ -67,15 +67,37 @@ router.post("/image", uploadS3.array("upload", 5),async(req, res, next) => {
   }
 });
 
-// 모든 post를 검색
-router.get('/', async(req, res) => {
-  const postFindResult = await Post.find();
-  const categoryFindResult = await Category.find();
-  const result = {postFindResult, categoryFindResult};
+//@route      GET api/post
+//@desc       More Loading Post
+//@access     Public
+// 몇개씩 끊어가며 포스트 로딩\
+// reducer : postReducer
+////////////////////////////////////////
+// 인피니티 스크롤을 위해
+// 프론트에서는 어떤 구간 단위 마다 끊어가며 데이터를 받아
+// 받은 데이터를 가지고 검색을 해야한다.
+////////////////////////////////////////
 
-  console.log(postFindResult, "All Post Get");
-  res.json(result);
+router.get('/skip/:skip', async(req, res) => {
+  try{
+    // 총 게시글 수
+    const postCount = await Post.countDocuments()
+    // url에 넘어온 숫자 만큼 넘겨가서 검색을 한다. 12개 게시글이 작성되어있다면 배열의 최신순 하여
+    // 가장 최신의 6개가 기본으로 검색해서 나오고 7번째 이후는 그 다음을 넘길 때 검색해서 또 6개씩..
 
+    const postFindResult = await Post.find()
+      .skip(Number(req.params.skip)) // param에 넘어온 skip을 숫자로 받아 skip만큼 검색을 해서 데이터를 로딩한다.
+      .limit(6) // 6개씩 만
+      .sort({date: -1}); // date는 -1라고 하면 최신순을 의미하며, 게시글은 최신순으로 정렬한다.
+    const categoryFindResult = await Category.find(); //
+    const result = { postFindResult, categoryFindResult, postCount };
+
+    res.json(result);
+  } catch(e) {
+    console.log(e);
+    res.json({msg: "더 이상 포스트가 없습니다"});
+
+  }
 });
 //@routes Post api/post
 //@desc   Create a Post

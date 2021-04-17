@@ -31,14 +31,14 @@ import { push } from 'connected-react-router';
 
 //All Post Load
 
-const loadPostAPI = () => {
-  return axios.get("/api/post")
+const loadPostAPI = (payload) => {
+  return axios.get(`/api/post/skip/${payload}`);
 }
 
-function* loadPosts() {
+function* loadPosts(action) {
   try{
-    const result = yield call(loadPostAPI)
-    console.log(result)
+    const result = yield call(loadPostAPI, action.payload)
+    console.log(result, 'loadPost');
     yield put({
       type: POSTS_LOADING_SUCCESS,
       payload: result.data //왜 result.data인지는 콘솔 확인 ㄱㄱ
@@ -49,9 +49,6 @@ function* loadPosts() {
       type: POSTS_LOADING_FAILURE,
       payload: e
     })
-
-    // 실패하면 홈으로 보내줘
-    yield put(push("/"));
   }
 }
 

@@ -42,7 +42,6 @@ export default function(state = initialState, action) {
     case POSTS_LOADING_REQUEST:
       return {
         ...state,
-        posts: [], 
         // 새로고침 할 경우, posts를 비워주어야 게시글 무한 증식을 막을 수 있다
         loading: true,
       }
@@ -51,6 +50,7 @@ export default function(state = initialState, action) {
         ...state,
         posts: [...state.posts, ...action.payload.postFindResult],
         categoryFindResult: action.payload.categoryFindResult,
+        postCount: action.payload.postCount,
         loading: false,
 
       }
@@ -144,7 +144,6 @@ export default function(state = initialState, action) {
         loading: true,
       };
     case SEARCH_SUCCESS:
-      // edit은 인증된 사람만 가능하다.
       return {
         ...state,
         searchBy: action.payload, // 무엇으로 검색했는지 input 창 입력값
