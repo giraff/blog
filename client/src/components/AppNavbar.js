@@ -2,9 +2,9 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Button, Collapse, Container, Form, Nav, Navbar, NavbarToggler, NavItem } from 'reactstrap';
 // 이 링크는 화면에서 바로 이동하기 때문에 새로고침을 방지하기 위해 Link 사용
 import { Link } from 'react-router-dom';
-import LoginModal from './auth/LoginModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { LOGOUT_REQUEST } from '../redux/types';
+import { LOGOUT_REQUEST, POSTS_WRITE_REQUEST } from '../redux/types';
+import LoginModal from './auth/LoginModal';
 import RegisterModal from './auth/RegisterModal';
 import SearchInput from './search/searchInput';
 
@@ -38,7 +38,9 @@ const AppNavbar = () => {
   }
 
   const addPostClick = () => {
-    console.log("addPostClick")
+    dispatch({
+      type: POSTS_WRITE_REQUEST,
+    })
   }
   const authLink = (
     <Fragment>
@@ -98,7 +100,7 @@ const AppNavbar = () => {
     <Navbar color="dark" dark expand="lg" className="sticky-top">
       <Container>
         <Link to="/" className="text-white text-decoration-none">
-          Side Project's Blog(현정 블로그)
+          Side Project's Blog
         </Link>
         <NavbarToggler onClick={handleToggle}/>
         <Collapse isOpen={isOpen} navbar>

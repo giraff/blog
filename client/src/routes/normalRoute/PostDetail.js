@@ -53,7 +53,7 @@ const PostDetail = (req) => {
       type: USER_LOADING_REQUEST,
       payload: localStorage.getItem("token") // 개발자 도구 - application 탭 - localstorage - token 키에서 확인 가능
     })
-  },[])
+  },[dispatch, req.match.params.id])
 
   //function
   // 글을 지우는 함수 => 상태 변화가 없기 때문에 redux는 사용 안 함!!! saga만 사용

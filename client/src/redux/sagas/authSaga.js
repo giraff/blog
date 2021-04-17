@@ -25,7 +25,7 @@ import axios from 'axios';
 const loginUserAPI = (loginData) => {
   console.log(loginData, "authSaga/loginData")
   const config = {
-    header: {
+    headers: {
       "Content-type": "application/json"
     }
   }
@@ -120,10 +120,9 @@ function* watchclearError() {
 // userLoading : 매번 로그인 하는 것
 // 챕터가 넘어갈 때마다 매번 로그인
 // userLoading은 토큰만 있으면 유저 로딩 여부를 판단할 수 있으므로 넘겨받는 값은 오직 토큰 뿐
-const userLoadingAPI = (data) => {
-  const token = data.payload
+const userLoadingAPI = (token) => {
   const config = {
-    header: {
+    headers: {
       "Content-type": "application/json"
     }
   }
@@ -136,10 +135,10 @@ const userLoadingAPI = (data) => {
 }
 
 function* userLoading(action) {
-  console.log(action,"userLoading acttion")
   try {
+    console.log(action,"userLoading")
     const result = yield call(userLoadingAPI, action.payload)
-    console.log(result)
+  
     yield put({
       type: USER_LOADING_SUCCESS,
       payload: result.data
