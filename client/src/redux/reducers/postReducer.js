@@ -42,6 +42,7 @@ export default function(state = initialState, action) {
     case POSTS_LOADING_REQUEST:
       return {
         ...state,
+        posts:[],
         // 새로고침 할 경우, posts를 비워주어야 게시글 무한 증식을 막을 수 있다
         loading: true,
       }
