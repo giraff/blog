@@ -280,7 +280,7 @@ router.get("/:id/edit", auth, async(req, res, next) => {
 // 수정 완료 후 포스트 게시
 router.post("/:id/edit", auth, async(req, res, next) => {
   console.log(req,'api/post/:id/edit');
-  const {body : {title, contents, category, fileUrl, id}} = req;
+  const {body : {title, contents, fileUrl, id}} = req;
   //req -> body -> title, contents, fileUrl, id를 구조분해
   try {
     // Post를 id로 찾고, title, contents, fileUrl, date를 업데이트한다.
@@ -290,39 +290,6 @@ router.post("/:id/edit", auth, async(req, res, next) => {
       },
       { new: true } // Update 사용 시 {new:true} 옵션 추가해야함
     );
-
-    const findResult = await Category.findOne({
-      categoryName: category,
-    });
-
-    if ((findResult)=== null || (findResult) === undefined) {
-      const newCategory = await Category.create({
-        categoryName: category,
-      });
-      await Post.findByIdAndUpdate(modified_post._id, {
-        $push: { category: newCategory._id },
-      });
-      await Category.findByIdAndUpdate(newCategory._id, {
-        $push: { posts: modified_post._id },
-      });
-      await User.findByIdAndUpdate(req.user.id, {
-        $push: {
-          posts: modified_post._id,
-        },
-      });
-    } else {
-      await Category.findByIdAndUpdate(findResult._id, {
-        $push: { posts: modified_post._id },
-      });
-      await Post.findByIdAndUpdate(modified_post._id, {
-        category: findResult._id,
-      });
-      await User.findByIdAndUpdate(req.user.id, {
-        $push: {
-          posts: modified_post._id,
-        },
-      });
-    }
 
     console.log(modified_post, "edit modified");
     res.redirect(`/api/post/${modified_post.id}`);
