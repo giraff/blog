@@ -33,7 +33,7 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectID,
         ref: "post",
       }, 
-      commend_id: { 
+      comment_id: { 
         type: mongoose.Schema.Types.ObjectId,
         ref: "comment",
       },
